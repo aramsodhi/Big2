@@ -24,14 +24,6 @@ suitReference: Dict[int, str] = {
     3: "Spades"
 }
 
-playTypeReference: Dict[int, str] = {
-    0: "Single",
-    1: "Pair",
-    2: "Three of a kind",
-    4: "Five card"
-}
-
-
 
 class Card:
     def __init__(self, _rank: int, _suit: str):
@@ -70,8 +62,15 @@ class Hand:
         return self.cards[-1]
     
     def displayHand(self) -> None:
+        for num, card in enumerate(self.cards):
+            print(f"{num + 1}. {card.name}")
+
+    def containsThreeOfDiamonds(self) -> bool:
         for card in self.cards:
-            print(card.name)
+            if card.name == "3 of Diamonds":
+                return True
+            
+        return False
     
 
 class Dealer:
@@ -94,43 +93,72 @@ class Dealer:
         return cardsBeingDealt
 
 
+class Play:
+    def __init__(self):
+        self.cards: list[Card] = []
+
+class SingleCard(Play):
+    def __init__(self):
+        super().__init__()
+
+class Pair(Play):
+    def __init__(self):
+        super().__init__()
+
+class ThreeOfAKind(Play):
+    def __init__(self):
+        super().__init__()
+
+
+class FiveCard(Play):
+    def __init__(self):
+        super().__init__()
+
+class Straight(FiveCard):
+    def __init__(self):
+        super().__init__()
+
+class Flush(FiveCard):
+    def __init__(self):
+        super().__init__()
+
+class FullHouse(FiveCard):
+    def __init__(self):
+        super().__init__()
+
+class FourOfAKind(FiveCard):
+    def __init__(self):
+        super().__init__()
+
+class StraightFlush(FiveCard):
+    def __init__(self):
+        super().__init__()
+
 
 
 class Pile:
     def __init__(self):
-        self.cardsPlayed = list[Card]
+        self.plays: list[Play] = []
 
-        self.playType = "Single"
-
-    def getTopCard(self):
-        if self.playType is "Single":
-            return self.cardsPlayed[0]
-        
-        elif self.playType is "Pair":
-            return self.cardsPlayed[:1]
-        
-        elif self.playType is "Three of a kind":
-            return self.cardsPlayed[:2]
-        
-        elif self.playType is "Five card":
-            return self.cardsPlayed[:4]
+    def getMostRecentPlay(self) -> Play:
+        return self.plays[0]
+    
+    def addNewPlay(self, play: Play) -> None:
+        self.plays.insert(0, play)
 
 
-    def playSingle(self, card: Card) -> None:
-        if self.playType is "Single" and card.getCompleteRanking() > self.getTopCard().getCompleteRanking():
-            self.cardsPlayed.insert(0, card)
+def printCurrentPlayerName() -> None:
+    if currentPlayer is playerOneHand:
+        print("Player 1")
+    elif currentPlayer is playerTwoHand:
+        print("Player 2")
+    elif currentPlayer is playerThreeHand:
+        print("Player 3")
+    elif currentPlayer is playerFourHand:
+        print("Player 4")
 
-    def playPair(self, pair: list[Card]) -> None:
-        if self.playType is "Pair":
-            # check if number of two cards is the same
-            if pair[0].rank is pair[1].rank:
-                # check if number is higher than current number
-                if pair[0].rank > self.getTopCard()[0].rank:
-                    # PLAY PAIR
-                    pass
-                elif pair[0].rank is self.getTopCard()[0].rank:
-                    pass
-                    # if the same, check if highest card of played pair is higher than highest of current pair
+
+
 
 
 dealer: Dealer = Dealer()
@@ -142,6 +170,36 @@ playerFourHand: Hand = dealer.dealHand()
 
 players: list[Hand] = [playerOneHand, playerTwoHand, playerThreeHand, playerFourHand]
 
-playerOneHand.displayHand()
+
+
+# figures out who is going first
+currentPlayer: Hand = playerOneHand
+
+if playerTwoHand.containsThreeOfDiamonds():
+    currentPlayer = playerTwoHand
+elif playerThreeHand.containsThreeOfDiamonds():
+    currentPlayer = playerThreeHand
+elif playerFourHand.containsThreeOfDiamonds():
+    currentPlayer = playerFourHand
+
+print("\n")
+
+# says who is going first
+printCurrentPlayerName()
+print("You must play the three of diamonds")
+
+print("\n")
+
+currentPlayer.displayHand()
+
+print("\n")
+
+print("What would you like to play?")
+
+
+
+while len(playerOneHand.cards) != 0 and len(playerTwoHand.cards) != 0 and len(playerThreeHand.cards) != 0 and len(playerFourHand.cards) != 0:
+    break
+
 
 
